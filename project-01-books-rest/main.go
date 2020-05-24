@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"log"
 	"net/http"
 
@@ -14,8 +15,19 @@ type Book struct {
 	Year   string `json:"year"`
 }
 
+var books []Book
+
 func main() {
 	var router *mux.Router = mux.NewRouter()
+
+	books = append(books,
+		Book{ID: 1, Title: "Pride and Prejudice", Author: "Mr. Golang", Year: "2010"},
+		Book{ID: 2, Title: "Wuthering Heights", Author: "Mr. Golang", Year: "2010"},
+		Book{ID: 3, Title: "Middlemarch", Author: "Mr. Golang", Year: "2010"},
+		Book{ID: 4, Title: "Emma", Author: "Mr. Golang", Year: "2010"},
+		Book{ID: 5, Title: "Great Expectations", Author: "Charles Dickens", Year: "2010"},
+	)
+
 	//fmt.Printf("type(router) = %T\n", router)
 	router.HandleFunc("/books", getBooks).Methods("GET")
 	router.HandleFunc("/books/{id}", getBook).Methods("GET")
@@ -27,7 +39,7 @@ func main() {
 }
 
 func getBooks(w http.ResponseWriter, r *http.Request) {
-	log.Println("getBooks is called.")
+	json.NewEncoder(w).Encode(books)
 }
 
 func getBook(w http.ResponseWriter, r *http.Request) {
