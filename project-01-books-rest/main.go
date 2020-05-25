@@ -32,7 +32,7 @@ func main() {
 	//fmt.Printf("type(router) = %T\n", router)
 	router.HandleFunc("/books", getBooks).Methods("GET")
 	router.HandleFunc("/books/{id}", getBook).Methods("GET")
-	router.HandleFunc("/books", addBook).Methods("POST")
+	router.HandleFunc("/books", addBook).Methods("PUT")
 	router.HandleFunc("/books", updateBook).Methods("PATCH")
 	router.HandleFunc("/books/{id}", removeBook).Methods("DELETE")
 
@@ -84,5 +84,19 @@ func updateBook(w http.ResponseWriter, r *http.Request) {
 }
 
 func removeBook(w http.ResponseWriter, r *http.Request) {
+
 	log.Println("removeBook is called.")
+	var params map[string]string = mux.Vars(r)
+	var bookParamID int64
+	bookParamID, _ = strconv.ParseInt(params["id"], 10, 64)
+
+	log.Println(params)
+
+	for i, book := range books {
+		if book.ID == int(bookParamID) {
+			books = append(books[:i], books[i+1:]...)
+			json.NewEncoder(w).Encode(&books)
+		}
+	}
+
 }
