@@ -33,7 +33,7 @@ func main() {
 	router.HandleFunc("/books", getBooks).Methods("GET")
 	router.HandleFunc("/books/{id}", getBook).Methods("GET")
 	router.HandleFunc("/books", addBook).Methods("POST")
-	router.HandleFunc("/books", updateBook).Methods("PUT")
+	router.HandleFunc("/books", updateBook).Methods("PATCH")
 	router.HandleFunc("/books/{id}", removeBook).Methods("DELETE")
 
 	log.Fatal(http.ListenAndServe(":8000", router))
@@ -71,6 +71,14 @@ func addBook(w http.ResponseWriter, r *http.Request) {
 
 func updateBook(w http.ResponseWriter, r *http.Request) {
 	log.Println("updateBook is called.")
+	var book Book
+	json.NewDecoder(r.Body).Decode(&book)
+
+	for i, item := range books {
+		if item.ID == book.ID {
+			books[i] = book
+		}
+	}
 }
 
 func removeBook(w http.ResponseWriter, r *http.Request) {
