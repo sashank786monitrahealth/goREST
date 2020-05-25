@@ -60,6 +60,13 @@ func getBook(w http.ResponseWriter, r *http.Request) {
 
 func addBook(w http.ResponseWriter, r *http.Request) {
 	log.Println("addBook is called.")
+	var book Book
+	log.Println(book)
+	json.NewDecoder(r.Body).Decode(&book)
+	books = append(books, book)
+	json.NewEncoder(w).Encode(books)
+	log.Printf("%+v\n", books)
+
 }
 
 func updateBook(w http.ResponseWriter, r *http.Request) {
