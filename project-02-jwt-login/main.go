@@ -8,6 +8,23 @@ import (
 	"github.com/gorilla/mux"
 )
 
+// create models
+type User struct {
+	ID       int64  `json:"id"`
+	Email    string `json:"email"`
+	Password string `json:"password"`
+}
+
+// jwt models
+type JWT struct {
+	Token string `json:"token`
+}
+
+// error model
+type Error struct {
+	Message string `json:"message"`
+}
+
 func main() {
 	var router *mux.Router = mux.NewRouter()
 	router.HandleFunc("/signup", signup).Methods("POST")
