@@ -21,10 +21,12 @@ func main() {
 
 func signup(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("signup invoked")
+	w.Write([]byte("successfully called signup."))
 }
 
 func login(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("login invoked")
+	w.Write([]byte("successfully called login."))
 
 }
 
