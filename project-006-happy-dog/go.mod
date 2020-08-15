@@ -1,3 +1,3 @@
-module example.com/username/repo
+module example/username/repo
 
 go 1.15
