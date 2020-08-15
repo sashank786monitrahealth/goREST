@@ -1,11 +1,15 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
 
+	"github.com/davecgh/go-spew/spew"
+	"github.com/dgrijalva/jwt-go"
 	"github.com/gorilla/mux"
+	"golang.org/x/crypto/bcrypt"
 )
 
 // create models
@@ -42,6 +46,19 @@ func signup(w http.ResponseWriter, r *http.Request) {
 }
 
 func login(w http.ResponseWriter, r *http.Request) {
+	var user User
+	json.NewDecoder(r.Body).Decode(&user)
+
+	hash, _ := bcrypt.GenerateFromPassword([]byte(user.Password), 10)
+	fmt.Printf("password = %v\n", user.Password)
+	fmt.Printf("password hash = %v\n", string(hash))
+
+	token, _ := GenerateToken(user)
+	fmt.Printf("token string = %v\n", token)
+
+	//spew.Dump(token)
+	//fmt.Println(tokenString)
+
 	fmt.Println("login invoked")
 	w.Write([]byte("successfully called login."))
 
@@ -55,4 +72,21 @@ func protectedEndpoint(w http.ResponseWriter, r *http.Request) {
 func TokenVerifyMiddleWare(next http.HandlerFunc) http.HandlerFunc {
 	fmt.Println("TokenVerifyMiddleware invoked")
 	return nil
+}
+
+func GenerateToken(user User) (string, error) {
+	var err error
+	var secret string = "secret"
+
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
+		"email": user.Email,
+		"exp":   "today",
+	})
+
+	var tokenString string
+	tokenString, err = token.SignedString([]byte(secret))
+
+	spew.Dump(token)
+
+	return tokenString, err
 }
